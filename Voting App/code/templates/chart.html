@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Election Results</title>
+
+  <!-- Bootstrap for styling -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <!-- Custom styles -->
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #e9ecef;
+    }
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .chart-container {
+      position: relative;
+      height: 450px;
+      width: 100%;
+      margin-top: 30px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #777;
+    }
+    .back-btn {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .back-btn a {
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      background-color: #007bff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .back-btn a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-chart-bar"></i> Live Election Results</h1>
+
+    <div class="chart-container">
+      <canvas id="electionChart"></canvas>
+    </div>
+
+    <!-- Back button -->
+    <div class="back-btn">
+      <a href="javascript:history.back()"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+
+    <footer>
+      <p>&copy; 2024 Election System. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Fetch the chart data dynamically from the backend (through Flask)
+    fetch('/chart_data')
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('electionChart').getContext('2d');
+        
+        // Configuring the chart
+        const electionChart = new Chart(ctx, {
+          type: 'bar', // You can change this to 'line' if needed
+          data: {
+            labels: data.labels, // Labels for each candidate
+            datasets: [{
+              label: 'Votes Count',
+              data: data.data, // Vote count data
+              backgroundColor: [
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+              ],
+              borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  font: {
+                    size: 14
+                  }
+                },
+                title: {
+                  display: true,
+                  text: 'Vote Count',
+                  font: {
+                    size: 16
+                  }
+                }
+              },
+              x: {
+                ticks: {
+                  font: {
+                    size: 14
+                  }
+                },
+                title: {
+                  display: true,
+                  text: 'Candidates',
+                  font: {
+                    size: 16
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  font: {
+                    size: 16
+                  }
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(tooltipItem) {
+                    return 'Votes: ' + tooltipItem.raw;
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+  </script>
+</body>
+</html>

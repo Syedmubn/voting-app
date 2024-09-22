@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1, h3, h4, h5 {
+            color: #343a40;
+        }
+
+        .hero-text {
+            margin-top: 50px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card-body h5 {
+            font-weight: bold;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Candidate Layout */
+        .candidate-card {
+            margin-bottom: 30px;
+        }
+
+        img.rounded-circle {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        hr {
+            border: 1px solid #e9ecef;
+            width: 75%;
+            margin: 30px auto;
+        }
+
+        @media (min-width: 768px) {
+            .candidate-card {
+                max-width: 250px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .candidate-card {
+                max-width: 220px;
+            }
+        }
+        
+        /* Spinner Styles */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hide the spinner when content is loaded */
+        body.loaded .spinner-wrapper {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Spinner -->
+    <div class="spinner-wrapper" id="spinner-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Voting Results Start -->
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+                <div class="hero-text text-center">
+                    <h1 class="display-4">Voting Results for {{ election_title }}</h1>
+                    <br>
+
+                    <!-- Display Total Voters and Participants -->
+                    <h4>Total Voters: {{ total_voters }}</h4>
+                    <h4>Voters Participated: {{ total_participants }}</h4>
+                    <hr>
+
+                    <!-- Display Results by Position -->
+                    {% for position, results in vote_results.items() %}
+                        <h3 class="text-primary">{{ position }}</h3>
+                        <h5>Total Votes Cast: {{ results | sum(attribute=2) }}</h5> <!-- Total votes for this position -->
+
+                        <!-- Display Candidates with Pictures and Votes -->
+                        <div class="row justify-content-center">
+                            {% set max_votes = results[0][2] %}
+                            {% set is_tie = results|selectattr('2', 'eq', max_votes)|list|length > 1 %}
+                            
+                            <!-- Loop through the candidates for this position -->
+                            {% for symbol, name, count in results %}
+                                <div class="col-md-3 text-center candidate-card">
+                                    <div class="card shadow-sm" style="min-height: 350px; padding: 15px;">
+                                        <!-- Only make the image clickable for admins -->
+                                        {% if session.get('IsAdmin') %}
+                                            <a href="{{ url_for('voters_for_candidate', symbol_name=symbol) }}">
+                                                <img src="/static/student_images/{{ symbol }}" 
+                                                     alt="Candidate Symbol" class="img-fluid rounded-circle" 
+                                                     style="width:120px; height:120px; object-fit: cover; margin: 10px auto;">
+                                            </a>
+                                        {% else %}
+                                            <img src="/static/student_images/{{ symbol }}" 
+                                                 alt="Candidate Symbol" class="img-fluid rounded-circle" 
+                                                 style="width:120px; height:120px; object-fit: cover; margin: 10px auto;">
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title text-dark">{{ name }}</h5>
+                                            <p class="card-text">Votes: <strong>{{ count }}</strong></p>
+                                            {% if count == max_votes %}
+                                                <p class="text-success">
+                                                    <strong>{% if is_tie %}Tie{% else %}Winner{% endif %}</strong>
+                                                </p>
+                                            {% endif %}
+                                            {% if count == 0 %}
+                                                <p class="text-muted">No votes</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <hr>
+                    {% endfor %}
+
+                    <!-- Back to Home Button -->
+                    <form action="{{ url_for('home') }}">
+                        <input class="btn btn-primary btn-lg" type="submit" value="Back to Home">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Voting Results End -->
+    <script>
+        // Show the spinner until the page is fully loaded
+        window.addEventListener('load', function () {
+            document.body.classList.add('loaded');
+        });
+
+        $(document).ready(function(){
+            // Hide flash messages after 3 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 2000); // 3000ms = 3 seconds
+        });
+    </script>
+</body>
+</html>

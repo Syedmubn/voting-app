@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Record Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, p {
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        img {
+            max-width: 50px;
+            height: auto;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .candidate-info {
+            display: flex;
+            align-items: center;
+        }
+        /* Back button styling */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Election Record Details</h1>
+
+    <!-- Back Button -->
+
+    {% if record is not none %}
+        <h2>Election {{ record.id }}</h2>
+        <p>Election Date: {{ record.election_date }}</p>
+        <p>Election Title: {{ record.election_title }}</p>
+        <p>Total Voters: {{ record.total_voters }}</p>
+        <p>Total Participants: {{ record.total_participants }}</p>
+
+        <h2>Results</h2>
+        {% if vote_results %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Candidate</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for position, candidates in vote_results.items() %}
+                        {% for candidate in candidates %}
+                        <tr>
+                            <td>{{ position }}</td>
+                            <td>
+                                <div class="candidate-info">
+                                    <img src="{{ url_for('static', filename='student_images/' + candidate[0]) }}" alt="{{ candidate[1] }}">
+                                    <span>{{ candidate[1] }}</span>
+                                </div>
+                            </td>
+                            <td>{{ candidate[2] }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    {% else %}
+        <p>No election record found.</p>
+    {% endif %}
+    <a href="javascript:history.back()" class="back-button">Back</a>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Online Voting System - Home</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free Website Template" name="keywords">
+    <meta content="Free Website Template" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Countdown Script -->
+    <script>
+        function startCountdown(seconds) {
+            function updateCountdown() {
+                let hours = Math.floor(seconds / 3600);
+                let minutes = Math.floor((seconds % 3600) / 60);
+                let sec = seconds % 60;
+
+                document.getElementById('countdown').innerText = 
+                    `Remaining time: ${String(hours).padStart(2, '0')}h:${String(minutes).padStart(2, '0')}m:${String(sec).padStart(2, '0')}s`;
+
+                if (seconds > 0) {
+                    seconds--;
+                    setTimeout(updateCountdown, 1000);
+                } else {
+                    document.getElementById('countdown').innerText = "Election has ended.";
+                }
+            }
+            updateCountdown();
+        }
+
+        window.onload = function() {
+            {% if remaining_seconds %}
+                startCountdown({{ remaining_seconds }});
+            {% else %}
+                document.getElementById('countdown').innerText = "No active election at the moment.";
+            {% endif %}
+        }
+    </script>
+</head>
+
+<body style="background-image:url('{{ url_for('static', filename='img/bg2.png') }}'); background-size:cover;">
+    <!-- Main Title Start -->
+    <div class="container-fluid text-center mt-3">
+        <h1>SMART VOTING SYSTEM FOR COMPUTING SOCIETY</h1>
+    </div>
+    <!-- Main Title End -->
+
+    <!-- Nav Bar Start -->
+    <div class="navbar navbar-expand-lg bg-dark navbar-dark mt-3">
+        <div class="container-fluid">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto">
+                    <!-- Placeholder for navigation items if needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Nav Bar End -->
+
+    <!-- Remaining Time Start -->
+    <div id="countdown" class="alert alert-info text-center" style="font-size: 20px; margin: 20px 0;"></div>
+    <!-- Remaining Time End -->
+
+    <center>
+    <div class="col-md-8">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+    </center>
+
+    <!-- Hero Start -->
+    <div class="hero">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="hero-text">
+                        <div style="margin-left: 210px">
+                            <a class="btn" href="{{ url_for('admin') }}" style="font-size:25px;"><b>Administrator</b></a>
+                            <a class="btn" href="{{ url_for('voting_res') }}" style="font-size:25px;"><b>Result</b></a>  <!-- Result Button -->
+                            <a class="btn" href="{{ url_for('registration') }}" style="font-size:25px;"><b>Registration</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/lightbox/js/lightbox.min.js') }}"></script>
+
+    <!-- Contact Javascript File -->
+    <script src="{{ url_for('static', filename='mail/jqBootstrapValidation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='mail/contact.js') }}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        $(document).ready(function(){
+            // Hide non-countdown flash messages after 3 seconds
+            $('.alert').not('#countdown').delay(3000).fadeOut('slow');
+        });
+    </script>
+</body>
+</html>

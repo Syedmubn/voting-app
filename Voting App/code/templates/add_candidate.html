@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Online Voting System - Add Candidate</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Add Candidate to Election" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='img/flag.jpg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .hero {
+            padding: 60px 0;
+        }
+        .form-control {
+            margin-bottom: 20px;
+        }
+        .form-row {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            display: block;
+            width: 100%;
+        }
+        .symbol-options img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin: 10px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+        .symbol-options input[type="radio"] {
+            display: none;
+        }
+        .symbol-options input[type="radio"]:checked + img {
+            border-color: #007bff;
+        }
+        
+        /* Spinner Styles */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hide the spinner when content is loaded */
+        body.loaded .spinner-wrapper {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Spinner -->
+    <div class="spinner-wrapper" id="spinner-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Nav Bar Start -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a href="{{ url_for('home') }}" class="navbar-brand">Online Voting System</a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+            <div class="navbar-nav">
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-item nav-link">Admin Dashboard</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Nav Bar End -->
+
+    <div class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="hero-text text-center">
+                        <h1>Add New Candidate</h1>
+                        <br>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        <form action="{{ url_for('add_candidate') }}" method="POST" enctype="multipart/form-data">
+                            <!-- First Row -->
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <select name="position" class="form-control" required>
+                                        <option value="" disabled selected>Select Position</option>
+                                        <option value="President">President</option>
+                                        <option value="Vice President">Vice President</option>
+                                        <option value="Secretary">Secretary</option>
+                                        <option value="Treasurer">Treasurer</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="member_name" class="form-control" placeholder="Candidate Name" required>
+                                </div>
+                            </div>
+
+                            <!-- Second Row -->
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <input type="text" name="party_name" class="form-control" placeholder="Party Name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="picture">Upload Picture:</label>
+                                    <input type="file" name="picture" accept="image/*" class="form-control-file" required>
+                                </div>
+                            </div>
+
+                            <!-- Third Row (Submit Button) -->
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary">Add Candidate</button>
+                                </div>
+                            </div>
+
+                            <!-- Fourth Row (Back to Dashboard Button) -->
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-block">Back to Dashboard</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/lightbox/js/lightbox.min.js') }}"></script>
+
+    <!-- Custom Javascript -->
+    <script>
+        $(document).ready(function(){
+            $('#customSymbolRadio').change(function(){
+                if(this.checked){
+                    $('#customSymbolInput').show();
+                }
+            });
+
+            $('input[name="symbol_name"]').not('#customSymbolRadio').change(function(){
+                $('#customSymbolInput').hide();
+                $('#customSymbolInput').val('');
+                $('#customSymbolPreview').attr('src', '{{ url_for("static", filename="img/upload.png") }}');
+            });
+
+            $('#customSymbolInput').change(function(event){
+                var reader = new FileReader();
+                reader.onload = function(){
+                    $('#customSymbolPreview').attr('src', reader.result);
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+            // Show the spinner until the page is fully loaded
+            window.addEventListener('load', function () {
+                document.body.classList.add('loaded');
+            });
+
+            // Hide flash messages after 3 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 2000); // 3000ms = 2 seconds
+        });
+    </script>
+
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

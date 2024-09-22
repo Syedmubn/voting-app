@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Update Student</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control:focus {
+            border-color: #80cbc4;
+            box-shadow: 0 0 5px rgba(128, 203, 196, 0.5);
+        }
+
+        button {
+            background-color: #26a69a;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2bbbad;
+        }
+
+        .btn-secondary {
+            background-color: #78909c;
+            color: white;
+            margin-top: 15px;
+            border-radius: 50px;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background-color: #90a4ae;
+        }
+
+        .hero-text {
+            text-align: center;
+        }
+
+        /* Flash Message Styles */
+        .alert {
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .form-control {
+                font-size: 14px;
+            }
+
+            button, .btn-secondary {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body.loaded .spinner-wrapper { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="spinner-wrapper" id="spinner-wrapper">
+        <div class="spinner"></div>
+    </div>
+
+
+    <div class="container">
+        <div class="hero-text">
+            <h1>Update Student</h1>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <!-- End Flash Messages -->
+
+            <form action="{{ url_for('update_student') }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="cnic_update">CNIC of the Student to Update:</label>
+                    <input type="text" class="form-control" id="cnic_update" name="cnic" placeholder="Enter CNIC" required>
+                </div>
+                <div class="form-group">
+                    <label for="email_update">Email (leave blank if no change):</label>
+                    <input type="email" class="form-control" id="email_update" name="email" placeholder="New Email (optional)">
+                </div>
+                <div class="form-group">
+                    <label for="phone_update">Phone Number (leave blank if no change):</label>
+                    <input type="text" class="form-control" id="phone_update" name="phone_number" placeholder="New Phone Number (optional)">
+                </div>
+                <div class="form-group">
+                    <label for="photo_update">Upload New Photo (leave blank if no change):</label>
+                    <input type="file" class="form-control" id="photo_update" name="photo" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-success">Update Student</button>
+            </form>
+            <a href="add_student" class="btn btn-secondary">Back to Add Student Page</a>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            document.body.classList.add('loaded');
+        });
+        $(document).ready(function(){
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

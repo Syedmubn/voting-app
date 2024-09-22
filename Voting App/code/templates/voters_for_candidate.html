@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voters for Candidate</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        h3 {
+            color: #2980b9;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        /* Card Styles */
+        .candidate-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .candidate-img {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .voters-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+
+        .voters-list .list-group-item {
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .voters-list .list-group-item:hover {
+            background-color: #dce0e2;
+        }
+
+        .back-btn {
+            background-color: #3498db;
+            border: none;
+            padding: 10px 20px;
+            color: #ffffff;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer Styles */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="candidate-card text-center">
+                    <img src="/static/student_images/{{ candidate.symbol_name }}" 
+                         alt="{{ candidate.member_name }}" 
+                         class="candidate-img">
+                    <h1>{{ candidate.member_name }}</h1>
+                    <h3>{{ candidate.position }}</h3>  <!-- Display the position -->
+                    <h3>Total Votes: {{ candidate.total_votes }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4">Voters List</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="voters-list">
+                    <ul class="list-group">
+                        {% for voter in voters %}
+                            <li class="list-group-item">
+                                <strong>{{ voter.first_name }} {{ voter.last_name }}</strong> 
+                                <span class="text-muted">(CNIC: {{ voter.cnic }})</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('voting_res') }}" class="back-btn">Back to Results</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 E-Voting System. All rights reserved.</p>
+    </div>
+</body>
+</html>

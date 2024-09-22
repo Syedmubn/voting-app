@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Voter Details</title>
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #e0f7fa, #f1f8e9); /* Soft gradient background */
+            background-size: cover;
+            background-position: center;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.9); /* Light navbar */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-nav a {
+            font-size: 18px;
+            color: #333 !important;
+            font-weight: 500;
+        }
+
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            color: #333;
+            min-height: 100vh; /* Ensures the hero section takes the full viewport height */
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00796b;
+        }
+
+        .student-details {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            color: #333;
+        }
+
+        .student-details img {
+            border-radius: 50%;
+            margin-bottom: 20px;
+            border: 4px solid #00796b;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .student-details p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .student-details strong {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #00796b;
+            border: none;
+            color: white;
+            font-size: 18px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #004d40;
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        a.back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #00796b;
+            color: white;
+            text-align: center;
+            border-radius: 50px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        a.back-to-top:hover {
+            background-color: #004d40;
+        }
+
+        a.back-to-top i {
+            line-height: 50px;
+        }
+        
+        /* Spinner Styles */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hide the spinner when content is loaded */
+        body.loaded .spinner-wrapper {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Spinner -->
+    <div class="spinner-wrapper" id="spinner-wrapper">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Nav Bar Start -->
+    <div class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto">
+                    <a href="{{ url_for('home') }}" class="nav-item nav-link">Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Nav Bar End -->
+
+    <!-- Hero Section Start -->
+    <div class="hero">
+        <div class="container">
+            <h1>Confirm Voter Details</h1>
+            <div class="student-details">
+                <!-- Display the student's photo as base64 or default avatar -->
+                {% if student.photo %}
+                    <img src="data:image/jpeg;base64,{{ student.photo }}" alt="Student Photo">
+                {% else %}
+                    <img src="{{ url_for('static', filename='img/default_avatar.png') }}" alt="Default Avatar">
+                {% endif %}
+
+                <!-- Display the student's details -->
+                <p><strong>First Name:</strong> {{ student.first_name or 'N/A' }}</p>
+                <p><strong>Middle Name:</strong> {{ student.middle_name or 'N/A' }}</p>
+                <p><strong>Last Name:</strong> {{ student.last_name or 'N/A' }}</p>
+                <p><strong>CNIC:</strong> {{ student.cnic or 'N/A' }}</p>
+                <p><strong>Email:</strong> {{ student.email or 'N/A' }}</p>
+                <p><strong>Phone Number:</strong> {{ student.phone_number or 'N/A' }}</p>
+                <p><strong>Department:</strong> {{ student.department or 'N/A' }}</p>
+                <p><strong>Semester:</strong> {{ student.semester or 'N/A' }}</p>
+            </div>
+
+            <form action="{{ url_for('confirm_voter') }}" method="POST">
+                <button type="submit" class="btn btn-primary mt-4">Confirm and Verify Face</button>
+            </form>
+        </div>
+    </div>
+    <!-- Hero Section End -->
+
+    <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/lightbox/js/lightbox.min.js') }}"></script>
+
+    <!-- Template Javascript -->
+    <script>
+        // Show the spinner until the page is fully loaded
+        window.addEventListener('load', function () {
+            document.body.classList.add('loaded');
+        });
+        
+        $(document).ready(function(){
+            // Hide flash messages after 3 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 2000); // 3000ms = 3 seconds
+        });
+    </script>
+</body>
+</html>

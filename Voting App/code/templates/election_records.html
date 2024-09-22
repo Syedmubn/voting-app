@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        /* Back button styling */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Election Records</h1>
+
+    {% if records %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Election Date</th>
+                    <th>Election Title</th>
+                    <th>Total Voters</th>
+                    <th>Total Participants</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.election_date }}</td>
+                    <td>{{ record.election_title }}</td>
+                    <td>{{ record.total_voters }}</td>
+                    <td>{{ record.total_participants }}</td>
+                    <td><a href="{{ url_for('election_record_details', record_id=record.id) }}">View Details</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No election records found.</p>
+    {% endif %}
+
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">Back</a>
+</body>
+</html>
