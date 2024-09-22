@@ -998,6 +998,3 @@ def update_student():
     return render_template('update_student.html')
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
